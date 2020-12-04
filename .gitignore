@@ -5,6 +5,7 @@ setting.py
 *.log
 
 .idea/
+.vscode/
 __pycache__/
 venv/
 log/*
