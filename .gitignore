@@ -1,11 +1,11 @@
-geckodriver
-setting.py
-
+**/.DS_Store
 *.pyc
-*.log
-
 .idea/
 .vscode/
 __pycache__/
+
 venv/
-log/*
+*.log
+
+geckodriver
+settings.py
