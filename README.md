@@ -1,7 +1,9 @@
 # Paper Info Service
 
 论文引文自动爬取项目，给定关键字词，通过百度学术和谷歌学术搜索引擎，爬取最相关的10条论文引文（GB/T7714格式）。
+
 百度学术：requests + 代理池 (原repo地址：https://github.com/jhao104/proxy_pool)
+
 谷歌学术：selenium (FirefoxDrive) + PAC代理
 
 
@@ -22,11 +24,13 @@ jhao104/proxy_pool:latest
 **注：redisDBName必须为数字**
 
 ## 新建配置文件settings.py
+```python
 SERVER_HOST = 'xxx.xxx.xxx.xxx'
 SERVER_PORT = 12345
 
 PROXY_POOL_HOST = 'xxx.xxx.xxx.xxx'
 PROXY_POOL_PORT = 12345
+```
 
 ## API
 |API|Method|Description|Arguments|
