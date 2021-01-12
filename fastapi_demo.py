@@ -8,7 +8,7 @@ from crawler import BaiduPaperInfoCrawler
 
 app = FastAPI()
 
-@app.post('/paper')
+@app.post('/')
 def search_paper(request: Request, engine: str=Form(...), keyword: str=Form(...)):
     if engine == 'baidu':
         crawler = BaiduPaperInfoCrawler(keyword)

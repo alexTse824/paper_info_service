@@ -20,13 +20,13 @@ class ProxyHandler:
 
 class BaiduPaperInfoCrawler:
     PAPER_LIST_PAGE_HEADER = {
-        'User-Agent': UserAgent().random,
+        'User-Agent': UserAgent(verify_ssl=False).random,
         'Referer': 'https://xueshu.baidu.com/',
         'Host': 'xueshu.baidu.com'
     }
     
     PAPER_CIT_PAGE_HEADER = {
-        'User-Agent': UserAgent().random,
+        'User-Agent': UserAgent(verify_ssl=False).random,
         'Host': 'xueshu.baidu.com'
     }
 
