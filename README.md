@@ -39,6 +39,7 @@ PROXY_POOL_PORT = 12345
 |/|POST|谷歌学术|{engine: google, keyword: test}|
 
 ## Return
+```json
 [
     "Ando M. IC test equipment: US, US4710704[P]. 1987.",
     "Posada D. Modeltest : testing the model DNA substitution[J]. Bioinformatics, 1998, 14.",
@@ -50,3 +51,4 @@ PROXY_POOL_PORT = 12345
     "Smith T O, Drew B T, Toms A P. A meta-analysis of the diagnostic test accuracy of MRA and MRI for the detection of glenoid labral injury[J]. Archives of Orthopaedic & Trauma Surgery, 2012, 132(7):905-919.",
     "White H. A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity[J]. Econometrica, 1980, 48(4):817-838."
 ]
+```
