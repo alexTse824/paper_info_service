@@ -2,8 +2,11 @@ import requests
 import json
 import random
 import time
+import concurrent
+
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from concurrent.futures import ThreadPoolExecutor
 
 import settings
 
@@ -35,47 +38,58 @@ def refresh_mirror_list():
 
     print('Get {} mirrors'.format(len(mirror_list)))
 
+def citation_info_crawler(paper_id, base_url, s):
+    cit_url = '{}/scholar?q=info:{}:scholar.google.com/&output=cite&script=0'.format(base_url, paper_id)
+    cit_response = s.get(cit_url)
+    cit_soup = BeautifulSoup(cit_response.text, 'html.parser')
+    return cit_soup.find('div', class_='gs_citr').text
 
-def get_google_scholar_citation(keyword, base_url, max_retries=3):
-    # TODO: 拉取谷歌学术US、HK镜像站节点列表并测试连通性，根据连接速度排序，定时优选
-    base_url = 'https://scholar.google.tsinbei.cn/'
-    keyword = 'machine'
-    proxy = get_proxy()
+def google_scholar_crawler(keyword, base_url, proxy):
+    s = requests.Session()
+    # 拉取关键字第一页所有item的datacid
+    s.proxies = {'http': "http://{}".format(proxy)}
+    s.headers.update({
+        'User-Agent': UserAgent(verify_ssl=False).random,
+        'Referer': base_url,
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+    })
 
-    with requests.Session() as s:
-        # 拉取关键字第一页所有item的datacid
-        s.proxies = {'http': "http://{}".format(proxy)}
-        s.headers.update({
-            'User-Agent': UserAgent(verify_ssl=False).random,
-            'Referer': base_url,
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-        })
+    search_url = '{}/scholar?q={}'.format(base_url, keyword)
+    response = s.get(search_url, timeout=5)
 
-        search_url = '{}/scholar?q={}'.format(base_url, keyword)
-        response = s.get(search_url, timeout=5)
-        print(response)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    paper_id_list = [paper_item['data-cid'] for paper_item in soup.find_all('div', class_='gs_r gs_or gs_scl')]
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        paper_id_list = [paper_item['data-cid'] for paper_item in soup.find_all('div', class_='gs_r gs_or gs_scl')]
+    # 线程池分别获取所有item的引文信息
+    cit_list = []
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        processes = [pool.submit(citation_info_crawler, paper_id, base_url, s) for paper_id in paper_id_list]
 
-        # 分别获取所有item的引文信息
-        s.headers.update({
-            'User-Agent': UserAgent(verify_ssl=False).random,
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-        })
+        for _ in concurrent.futures.as_completed(processes):
+            cit_list.append(_.result())
+    
+    return cit_list
 
-        cit_list = []
 
-        for paper_id in paper_id_list:
-            cit_url = '{}/scholar?q=info:{}:scholar.google.com/&output=cite&script=0'.format(base_url, paper_id)
+def get_citation(keyword, max_retries=3):
+    citation_list = []
 
-            cit_response = s.get(
-                cit_url,
-            )
-            cit_soup = BeautifulSoup(cit_response.text, 'html.parser')
-            cit_list.append(cit_soup.find('div', class_='gs_citr').text)
+    for i in range(max_retries):
+        with open('mirrors.json') as f:
+            mirror_list = json.load(f)
+            base_url = random.choice(mirror_list)
+        proxy = get_proxy()
+        print('[{}/{}]{}({})'.format(i+1, max_retries, base_url, proxy))
 
-        print(cit_list)
-        print('-' * 50)
-        print(s.headers)
-        print(s.proxies)
+        citation_list = google_scholar_crawler(keyword, base_url, proxy)
+        if citation_list:
+            break
+        
+    return citation_list
+
+
+if __name__ == "__main__":
+    a = time.time()
+    ret = get_citation('test')
+    print(ret)
+    print('Cost:', time.time() - a)
