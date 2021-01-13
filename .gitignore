@@ -9,3 +9,4 @@ venv/
 
 geckodriver
 settings.py
+mirrors.json
