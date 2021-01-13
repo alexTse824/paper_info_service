@@ -79,17 +79,10 @@ def get_citation(keyword, max_retries=3):
             mirror_list = json.load(f)
             base_url = random.choice(mirror_list)
         proxy = get_proxy()
-        print('[{}/{}]{}({})'.format(i+1, max_retries, base_url, proxy))
+        print('[{}/{}] [{} - {}] {}'.format(i+1, max_retries, base_url, proxy, keyword))
 
         citation_list = google_scholar_crawler(keyword, base_url, proxy)
         if citation_list:
             break
         
     return citation_list
-
-
-if __name__ == "__main__":
-    a = time.time()
-    ret = get_citation('test')
-    print(ret)
-    print('Cost:', time.time() - a)
