@@ -2,17 +2,17 @@
 
 论文引文自动爬取项目，给定关键字词，通过谷歌学术搜索引擎，爬取最相关的10条论文引文（GB/T7714格式）。
 
-谷歌学术镜像站：https://www.library.ac.cn
+谷歌学术镜像站：https://www.library.ac.cn  
 代理池：https://github.com/jhao104/proxy_pool
 
 ## 代理池启动
 
-**[redis]**
+**[redis]**  
 docker run -d -p 6379:6379 \
 --name proxy_pool_redis redis \
 --requirepass "yourRedisPasswd" 
 
-**[proxy_pool]**
+**[proxy_pool]**  
 docker run \
 -d -p 5010:5010 \
 --env DB_CONN=redis://:yourRedisPasswd@IP:6379/redisDBName \
