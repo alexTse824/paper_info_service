@@ -1,11 +1,9 @@
 # Paper Info Service
 
-论文引文自动爬取项目，给定关键字词，通过百度学术和谷歌学术搜索引擎，爬取最相关的10条论文引文（GB/T7714格式）。
+论文引文自动爬取项目，给定关键字词，通过谷歌学术搜索引擎，爬取最相关的10条论文引文（GB/T7714格式）。
 
-百度学术：requests + 代理池 (原repo地址：https://github.com/jhao104/proxy_pool)
-
-谷歌学术：selenium (FirefoxDrive) + PAC代理
-
+谷歌学术镜像站：https://www.library.ac.cn
+代理池：https://github.com/jhao104/proxy_pool
 
 ## 代理池启动
 
@@ -35,8 +33,7 @@ PROXY_POOL_PORT = 12345
 ## API
 |API|Method|Description|Arguments|
 |:-:|:-:|:-:|:-:|
-|/|POST|百度学术|{engine: baidu, keyword: test}|
-|/|POST|谷歌学术|{engine: google, keyword: test}|
+|/|POST|谷歌学术|{keyword: test}|
 
 ## Return
 ```json

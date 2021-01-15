@@ -13,7 +13,7 @@ def search_paper(request: Request, keyword: str=Form(...)):
     return get_citation(keyword)
 
 
-if __name__ == "__main__":
+def run():
     refresh_mirror_list()
     uvicorn.run(
         app = app,
@@ -21,3 +21,6 @@ if __name__ == "__main__":
         port = settings.SERVER_PORT,
     )
 
+
+if __name__ == "__main__":
+    run()
